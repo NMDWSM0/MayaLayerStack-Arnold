@@ -14,3 +14,8 @@ After you installed, you can find some path like this:
 -   `ARNOLD_PLUGIN_PATH` to `your plugin folder`, in this case is `/plugin` of this project
 -   `MTOA_TEMPLATES_PATH` the same as `ARNOLD_PLUGIN_PATH`
 -   Add `%ARNOLD_PATH%\bin` to your system's `PATH` variable
+
+#### Setting output path in visual studio
+
+change the "output dir" of the project to `/plugin` of this project, then compile.
+Maya will automatically load the .dll shader.
