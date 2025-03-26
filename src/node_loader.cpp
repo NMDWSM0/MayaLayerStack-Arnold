@@ -1,7 +1,13 @@
 #include <ai.h>
+#include <fstream>
 #include "mls_bsdf.h"
 
+
 AI_SHADER_NODE_EXPORT_METHODS(LayerStackMtd);
+
+const char NodeName[] = "layerstack";
+
+const char NodeParamTypeName[] = "type_name";
 
 enum LayerStackParams { 
     p_albedo_0,
@@ -16,6 +22,7 @@ enum LayerStackParams {
 
 node_parameters
 {
+    //AiParameterStr(NodeParamTypeName, NodeName);
     AiParameterRGB("albedo_0", 1.0f, 0.0f, 0.0f);
     AiParameterFlt("eta_0", 1.5f);
     AiParameterFlt("kappa_0", 0.0f);
@@ -28,8 +35,8 @@ node_parameters
 
 node_initialize
 {
-    LayerStackBSDF bsdf;
-    AiNodeSetLocalData(node, (void*)(&bsdf));
+    LayerStackBSDF *bsdf = new LayerStackBSDF;
+    AiNodeSetLocalData(node, bsdf);
 }
 
 node_update
@@ -42,6 +49,8 @@ node_finish
 
 shader_evaluate
 {
+    if (sg->Rt & AI_RAY_SHADOW)
+        return;
     AtRGB albedo_0  = AiShaderEvalParamRGB(p_albedo_0);
     float eta_0     = AiShaderEvalParamFlt(p_eta_0);
     float kappa_0   = AiShaderEvalParamFlt(p_kappa_0);
@@ -62,10 +71,13 @@ shader_evaluate
     lsbsdf.kappas.push_back(kappa_1);
     lsbsdf.alphas.push_back(alpha_1);
 
-    if (sg->Rt & AI_RAY_SHADOW)
-        return;
+    //std::ofstream outFile("E:/CIS6600_/SIG_TOOL/plugin/output.txt", std::ios::app); // ×·¼ÓÄ£Ê½
+    //if (outFile) {
+    //    outFile << albedo_0.r << ", " << albedo_0.g << ", " << albedo_0.b << std::endl;
+    //}
+    //outFile.close();
 
-    sg->out.CLOSURE() = LayerStackBSDFCreate(sg, lsbsdf);
+    sg->out.CLOSURE() = LayerStackBSDFCreate(sg, lsbsdf, albedo_0);
 }
 
 node_loader

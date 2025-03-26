@@ -40,7 +40,7 @@ struct LayerStackBSDF
     }
 };
 
-AtBSDF* LayerStackBSDFCreate(const AtShaderGlobals* sg, const LayerStackBSDF& lsbsdf);
+AtBSDF* LayerStackBSDFCreate(const AtShaderGlobals* sg, const LayerStackBSDF& lsbsdf, AtRGB albedo_0);
 
 void computeAddingDoubling(
     float cosNI, const int nb_layers,

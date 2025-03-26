@@ -179,11 +179,12 @@ bsdf_eval
     return lobe_mask;
 }
 
-AtBSDF* LayerStackBSDFCreate(const AtShaderGlobals* sg, const LayerStackBSDF& lsbsdf)
+AtBSDF* LayerStackBSDFCreate(const AtShaderGlobals* sg, const LayerStackBSDF& lsbsdf, AtRGB albedo_0)
 {
     AtBSDF* bsdf = AiBSDF(sg, AI_RGB_WHITE, LayerStackBSDFMtd, sizeof(LayerStackBSDF));
     LayerStackBSDF* data = (LayerStackBSDF*)AiBSDFGetData(bsdf);
     new(data) LayerStackBSDF();
     *data = lsbsdf;
+    data->albedos[0] = albedo_0;
     return bsdf;
 }
