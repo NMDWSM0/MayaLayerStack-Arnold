@@ -178,6 +178,7 @@ shader_evaluate
         }
         if (depth > 0.0) {
             computeSigma(albedo, 0.1, sigma_a, sigma_s);
+            alpha = gToVariance(0.7);
         }
         
         lsbsdf.albedos.push_back(albedo);
