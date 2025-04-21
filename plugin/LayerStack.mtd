@@ -94,9 +94,16 @@
 		maya.keyable        BOOL    true
 
     [attr depth]
-		min					FLOAT	0.001
-		max					FLOAT	0.1
-		default				FLOAT	0.01
+		min					FLOAT	0.01
+		max					FLOAT	1.0
+		default				FLOAT	0.1
 		maya.name			STRING	"depth"
+		maya.keyable        BOOL    true
+
+    [attr g]
+		min					FLOAT	0.001
+		max					FLOAT	1.0
+		default				FLOAT	0.7
+		maya.name			STRING	"g"
 		maya.keyable        BOOL    true
     

@@ -207,8 +207,8 @@ void computeAddingDoubling(
             R21 = AtRGB(0.0f);
 
             /* Fetch precomputed variance for HG phase function */
-            s_t12 = alpha;
-            s_t21 = alpha;
+            s_t12 = alpha * depth * 0.25;
+            s_t21 = alpha * depth * 0.25;
 
         }
         else {
