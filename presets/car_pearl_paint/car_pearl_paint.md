@@ -13,13 +13,14 @@
 
 -   Dielectric Layer2
 
-    -   roughness 0.3 \* noise1.r
-    -   ior 1.0 + 1.5 \* noise1.r
+    -   roughness 0.2 \* noise1.r
+    -   ior 2.0 - 1.0 \* noise1.r
     -   noise1 parameters:
+        -   depth max 1
         -   amplitude 2.0
         -   frequency 192.0
         -   implode 0.1
-        -   density 0.1
+        -   density 0.06
 
 -   Volumetric Layer
 
