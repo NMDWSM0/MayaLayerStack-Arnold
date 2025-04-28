@@ -138,24 +138,45 @@ float fresnelDielectric(float cosTi, float eta) {
     return (rPa * rPa + rPe * rPe) * .5f;
 }
 
-float fresnelConductor(float cosI, float eta, float k) {
-    Vec2c etak(eta, k);
-    Vec2c cosThetaI(AiClamp(cosI, 0.f, 1.f), 0.f);
+//float fresnelConductor(float cosI, float eta, float k) {
+//    Vec2c etak(eta, k);
+//    Vec2c cosThetaI(AiClamp(cosI, 0.f, 1.f), 0.0);
+//
+//    Vec2c sin2ThetaI(1.f - cosThetaI.LengthSqr(), 0.0);
+//    Vec2c sin2ThetaT = sin2ThetaI / (etak * etak);
+//    Vec2c cosThetaT = (Vec2c(1.f, 0.f) - sin2ThetaT).Sqrt();
+//
+//    Vec2c rPa = (etak * cosThetaI - cosThetaT) / (etak * cosThetaI + cosThetaT);
+//    Vec2c rPe = (cosThetaI - etak * cosThetaT) / (cosThetaI + etak * cosThetaT);
+//    return (rPa.LengthSqr() + rPe.LengthSqr()) * .5f;
+//}
 
-    Vec2c sin2ThetaI(1.f - cosThetaI.LengthSqr(), 0.f);
-    Vec2c sin2ThetaT = sin2ThetaI / (etak * etak);
-    Vec2c cosThetaT = (Vec2c(1.f, 0.f) - sin2ThetaT).Sqrt();
+float fresnelConductor(float CosTheta, float Eta, float Etak)
+{
+    float CosTheta2 = CosTheta * CosTheta;
+    float SinTheta2 = 1 - CosTheta2;
+    float Eta2 = Eta * Eta;
+    float Etak2 = Etak * Etak;
 
-    Vec2c rPa = (etak * cosThetaI - cosThetaT) / (etak * cosThetaI + cosThetaT);
-    Vec2c rPe = (cosThetaI - etak * cosThetaT) / (cosThetaI + etak * cosThetaT);
-    return (rPa.LengthSqr() + rPe.LengthSqr()) * .5f;
+    float t0 = Eta2 - Etak2 - SinTheta2;
+    float a2plusb2 = sqrt(t0 * t0 + 4 * Eta2 * Etak2);
+    float t1 = a2plusb2 + CosTheta2;
+    float a = sqrt(0.5f * (a2plusb2 + t0));
+    float t2 = 2 * a * CosTheta;
+    float Rs = (t1 - t2) / (t1 + t2);
+
+    float t3 = CosTheta2 * a2plusb2 + SinTheta2 * SinTheta2;
+    float t4 = t2 * SinTheta2;
+    float Rp = Rs * (t3 - t4) / (t3 + t4);
+
+    return 0.5 * (Rp + Rs);
 }
 
 void evalFresnel(float ct, const AtRGB& albedo, float alpha, float eta, float kappa,
     AtRGB& Rij, AtRGB& Tij) {
     Rij = (kappa == 0.0f) ? fresnelDielectric(ct, eta) * AtRGB(1.0f) :
-        albedo * fresnelConductor(ct, eta, kappa);
-    Tij = (kappa == 0.0f) ? (AtRGB(1.0) - Rij) * albedo : AtRGB(0.0);
+        albedo * fresnelConductor(ct, eta, kappa) / average(albedo);
+    Tij = (kappa == 0.0f) ? (AtRGB(1.0) - Rij): AtRGB(0.0);
 }
 
 void computeAddingDoubling(

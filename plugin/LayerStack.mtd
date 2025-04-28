@@ -47,7 +47,7 @@
 
     [attr kappa]
 		min					FLOAT	0.01
-		max					FLOAT	5.0
+		max					FLOAT	10.0
 		default				FLOAT	2.9
 		maya.name			STRING	"kappa"
 		maya.keyable        BOOL    true
