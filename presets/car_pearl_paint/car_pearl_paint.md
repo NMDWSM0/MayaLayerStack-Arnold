@@ -32,4 +32,4 @@
     -   albedo (1, 0.7, 0.7) can be changed to other colors
     -   ior 0.2
     -   kappa 5.0
-    -   roughness 0.5
+    -   roughness 0.8

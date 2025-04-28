@@ -1,4 +1,5 @@
 #include "util.h"
+#include "ppmimage.h"
 #include <fstream>
 
 struct TIR {
@@ -117,6 +118,8 @@ public:
 };
 
 TIR m_TIR("TIR.bin");
+//BMPImage Ess((getDllDirectory() / "Ess.bmp").string());
+PPMImage Ess("E:/CIS6600_/SIG_TOOL/plugin/Ess.ppm");
 
 float fresnelDielectric(float cosTi, float eta) {
     cosTi = AiClamp(cosTi, -1.f, 1.f);
@@ -153,16 +156,16 @@ float fresnelDielectric(float cosTi, float eta) {
 
 float fresnelConductor(float CosTheta, float Eta, float Etak)
 {
-    float CosTheta2 = CosTheta * CosTheta;
-    float SinTheta2 = 1 - CosTheta2;
+    float CosTheta2 = std::clamp(CosTheta * CosTheta, 0.0f, 1.0f);
+    float SinTheta2 = std::clamp(1 - CosTheta2, 0.0f, 1.0f);
     float Eta2 = Eta * Eta;
     float Etak2 = Etak * Etak;
 
     float t0 = Eta2 - Etak2 - SinTheta2;
     float a2plusb2 = sqrt(t0 * t0 + 4 * Eta2 * Etak2);
     float t1 = a2plusb2 + CosTheta2;
-    float a = sqrt(0.5f * (a2plusb2 + t0));
-    float t2 = 2 * a * CosTheta;
+    float a = sqrt(std::max(0.5f * (a2plusb2 + t0), 0.0f));
+    float t2 = 2 * a * std::clamp(CosTheta, 0.0f, 1.0f);
     float Rs = (t1 - t2) / (t1 + t2);
 
     float t3 = CosTheta2 * a2plusb2 + SinTheta2 * SinTheta2;
@@ -174,8 +177,12 @@ float fresnelConductor(float CosTheta, float Eta, float Etak)
 
 void evalFresnel(float ct, const AtRGB& albedo, float alpha, float eta, float kappa,
     AtRGB& Rij, AtRGB& Tij) {
-    Rij = (kappa == 0.0f) ? fresnelDielectric(ct, eta) * AtRGB(1.0f) :
-        albedo * fresnelConductor(ct, eta, kappa) / average(albedo);
+    float fresnel = (kappa == 0.0f) ? fresnelDielectric(ct, eta) :
+        fresnelConductor(ct, eta, kappa);
+    Rij = (kappa == 0.0f) ? fresnel * AtRGB(1.0f) :
+        albedo * fresnel / average(albedo);
+    float ess = (Ess.getPixel(abs(ct), alpha).r)/255.f;
+    Rij *= (1 + fresnel * (1 - ess) / ess);
     Tij = (kappa == 0.0f) ? (AtRGB(1.0) - Rij): AtRGB(0.0);
 }
 

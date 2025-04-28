@@ -20,4 +20,4 @@
         ![texture](albedo.png)
     -   ior 0.01
     -   kappa 2.75
-    -   roughness 0.2
+    -   roughness 0.6
