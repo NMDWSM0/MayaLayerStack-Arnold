@@ -180,7 +180,7 @@ void evalFresnel(float ct, const AtRGB& albedo, float alpha, float eta, float ka
     float fresnel = (kappa == 0.0f) ? fresnelDielectric(ct, eta) :
         fresnelConductor(ct, eta, kappa);
     Rij = (kappa == 0.0f) ? fresnel * AtRGB(1.0f) :
-        albedo * fresnel / average(albedo);
+        albedo * fresnel / (sqr(1 - eta) + sqr(kappa)) * (sqr(1 + eta) + sqr(kappa));
     float ess = (Ess.getPixel(abs(ct), alpha).r)/255.f;
     Rij *= (1 + fresnel * (1 - ess) / ess);
     Tij = (kappa == 0.0f) ? (AtRGB(1.0) - Rij): AtRGB(0.0);

@@ -18,6 +18,6 @@
 -   Metal Layer
     -   albedo  
         ![texture](albedo.png)
-    -   ior 0.01
-    -   kappa 2.75
-    -   roughness 0.6
+    -   ior 0.2
+    -   kappa 2.6
+    -   roughness 0.8
