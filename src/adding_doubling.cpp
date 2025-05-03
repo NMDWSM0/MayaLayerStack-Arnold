@@ -118,8 +118,7 @@ public:
 };
 
 TIR m_TIR("TIR.bin");
-//BMPImage Ess((getDllDirectory() / "Ess.bmp").string());
-PPMImage Ess("E:/CIS6600_/SIG_TOOL/plugin/Ess.ppm");
+PPMImage Ess((getDllDirectory() / "Ess.ppm").string());
 
 float fresnelDielectric(float cosTi, float eta) {
     cosTi = AiClamp(cosTi, -1.f, 1.f);

@@ -18,8 +18,8 @@ std::filesystem::path getDllDirectory()
 
     char path[MAX_PATH];
     GetModuleFileNameA(hModule, path, MAX_PATH);
-
-    return std::filesystem::path(path).parent_path();
+    auto result = std::filesystem::path(path).parent_path();
+    return result;
 }
 
 struct Pixel {
